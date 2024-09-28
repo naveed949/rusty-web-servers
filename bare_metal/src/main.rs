@@ -6,7 +6,10 @@ const NOT_FOUND_STATUS: &str = "HTTP/1.1 404 NOT FOUND";
 
 fn main() {
     // Bind the TCP listener to the address and port
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap_or_else(|e| {
+        eprintln!("Failed to bind to port 7878: {}", e);
+        std::process::exit(1);
+    });
     println!("Server running on port 7878");
 
     // Loop through incoming connections
