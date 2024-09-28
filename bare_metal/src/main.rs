@@ -1,10 +1,13 @@
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
+use threadpool::ThreadPool;
 
 const OK_STATUS: &str = "HTTP/1.1 200 OK";
 const NOT_FOUND_STATUS: &str = "HTTP/1.1 404 NOT FOUND";
 
 fn main() {
+    // Create a thread pool with 4 threads
+    let pool = ThreadPool::new(4);
     // Bind the TCP listener to the address and port
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap_or_else(|e| {
         eprintln!("Failed to bind to port 7878: {}", e);
@@ -18,7 +21,8 @@ fn main() {
             eprintln!("Failed to establish connection: {}", e);
             std::process::exit(1);
         });
-        handle_connection(stream);
+        // Execute the connection handling in a thread from the pool
+        pool.execute(move|| handle_connection(stream));
     }
 }
 
