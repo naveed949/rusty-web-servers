@@ -15,6 +15,7 @@ impl Server {
 
     pub fn run(&self) {
         let listener = TcpListener::bind(format!("{}:{}", self.config.address, self.config.port)).unwrap();
+        println!("Server listening on {}:{}", self.config.address, self.config.port);
         let pool = ThreadPool::new(self.config.thread_pool_size);
 
         for stream in listener.incoming() {
