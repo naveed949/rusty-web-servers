@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "bare_metal",
+    "tide_server"
+]
+
+[profile.release]
+opt-level = 3
