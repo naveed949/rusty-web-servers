@@ -20,7 +20,8 @@ async fn main() -> tide::Result<()> {
     let mut app = tide::new();
     app.at("/").get(hello);
     app.at("/post").post(post_hello);
-    app.listen("127.0.0.1:8080").await?;
     println!("Tide_Server running on port 8080");
+    app.listen("127.0.0.1:8080").await?;
+    
     Ok(())
 }
