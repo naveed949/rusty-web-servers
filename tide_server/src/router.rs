@@ -23,6 +23,9 @@ pub fn configure_router() -> Server<()> {
         nested.at("/query").get(query_handler);
         nested
     });
+
+    // serve static files
+    app.at("/file").serve_file("static/text.txt").unwrap();
     
     app
 }
