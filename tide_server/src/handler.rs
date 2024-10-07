@@ -33,3 +33,19 @@ pub async fn json_response(_req: Request<()>) -> TideResult {
     res.set_content_type(mime::JSON);
     Ok(res)
 }
+
+#[derive(serde::Deserialize)]
+struct QueryParams {
+    name: String,
+    age: Option<i32>,
+}
+
+pub async fn query_handler(req: Request<()>) -> TideResult {
+    let query: QueryParams = req.query()?;
+    let age_message = if let Some(age) = query.age {
+        format!(" You are {} years old.", age)
+    } else {
+        String::from("")
+    };
+    Ok(format!("Hello, {}!{}", query.name, age_message).into())
+}

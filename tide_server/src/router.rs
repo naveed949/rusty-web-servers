@@ -1,5 +1,5 @@
 use tide::Server;
-use crate::handler::{hello, post_hello, greet, json_response};
+use crate::handler::{hello, post_hello, greet, json_response, query_handler};
 use crate::middleware::boxed_log_middleware;
 
 pub fn configure_router() -> Server<()> {
@@ -11,6 +11,7 @@ pub fn configure_router() -> Server<()> {
     app.at("/greet/:name").get(greet);
     app.at("/post").post(post_hello);
     app.at("/json").get(json_response);
+    app.at("/query").get(query_handler);
     
     app
 }
