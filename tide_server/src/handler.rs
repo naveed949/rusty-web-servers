@@ -8,6 +8,11 @@ struct PostData {
     name: String,
     age: i32,
 }
+#[derive(serde::Deserialize)]
+struct QueryParams {
+    name: String,
+    age: Option<i32>,
+}
 
 pub async fn hello(_req: Request<()>) -> TideResult {
     Ok("Hello, world!".into())
@@ -32,12 +37,6 @@ pub async fn json_response(_req: Request<()>) -> TideResult {
     res.set_body(data.to_string());
     res.set_content_type(mime::JSON);
     Ok(res)
-}
-
-#[derive(serde::Deserialize)]
-struct QueryParams {
-    name: String,
-    age: Option<i32>,
 }
 
 pub async fn query_handler(req: Request<()>) -> TideResult {
