@@ -25,7 +25,12 @@ pub fn configure_router() -> Server<()> {
     });
 
     // serve static files
-    app.at("/file").serve_file("static/text.txt").unwrap();
+    app.at("/static").nest({
+        let mut static_routes = tide::new();
+        static_routes.at("/file").serve_file("static/text.txt").unwrap();
+        static_routes.at("/").serve_dir("static/").unwrap();
+        static_routes
+    });
     
     app
 }
