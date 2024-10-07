@@ -48,3 +48,26 @@ pub async fn query_handler(req: Request<()>) -> TideResult {
     };
     Ok(format!("Hello, {}!{}", query.name, age_message).into())
 }
+
+// cookie handling
+pub async fn set_cookie(_req: Request<()>) -> TideResult {
+    let mut res = Response::new(200);
+    res.insert_cookie(tide::http::Cookie::new("name", "tide"));
+    Ok(res)
+}
+
+pub async fn get_cookie(req: Request<()>) -> TideResult {
+    let cookie = req.cookie("name").unwrap();
+    Ok(format!("Hello, {}!", cookie.value()).into())
+}
+
+pub async fn remove_cookie(_req: Request<()>) -> TideResult {
+    let mut res = Response::new(200);
+    res.remove_cookie(tide::http::Cookie::named("name"));
+    Ok(res)
+}
+
+// 404 handler
+pub async fn not_found(_req: Request<()>) -> TideResult {
+    Ok("Not Found".into())
+}

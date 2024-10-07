@@ -1,5 +1,5 @@
 use tide::Server;
-use crate::handler::{hello, post_hello, greet, json_response, query_handler};
+use crate::handler::{get_cookie, greet, hello, json_response, not_found, post_hello, query_handler, remove_cookie, set_cookie};
 use crate::middleware::boxed_log_middleware;
 
 pub fn configure_router() -> Server<()> {
@@ -32,5 +32,17 @@ pub fn configure_router() -> Server<()> {
         static_routes
     });
     
+    // cookie handling
+    app.at("/cookie").nest({
+        let mut cookie_routes = tide::new();
+        cookie_routes.at("/set").put(set_cookie);
+        cookie_routes.at("/get").get(get_cookie);
+        cookie_routes.at("/remove").get(remove_cookie);
+
+        cookie_routes
+    });
+
+    // fallback route
+    app.at("*").all(not_found);
     app
 }
