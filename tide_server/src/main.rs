@@ -3,6 +3,7 @@ mod handler;
 mod middleware;
 mod router;
 mod server;
+mod repository;
 
 use server::Server;
 use config::Config;

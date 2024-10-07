@@ -1,7 +1,10 @@
+use tide::log;
 use tide::Request;
 use tide::Response;
 use tide::http::mime;
 use tide::Result as TideResult;
+use crate::repository::Model;
+use crate::repository::SharedRepository;
 
 #[derive(serde::Deserialize)]
 struct PostData {
@@ -70,4 +73,27 @@ pub async fn remove_cookie(_req: Request<()>) -> TideResult {
 // 404 handler
 pub async fn not_found(_req: Request<()>) -> TideResult {
     Ok("Not Found".into())
+}
+
+// state handling
+
+pub async fn get_data(req: Request<SharedRepository>) -> TideResult {
+    let repo = req.state();
+    let repo = repo.lock().unwrap();
+    let key = req.param("key")?;
+    log::info!("Getting data for key: {}", key);
+    if let Some(model) = repo.get(key) {
+        Ok(model.value().into())
+    } else {
+        Ok("Not Found".into())
+    }
+}
+
+pub async fn set_data(mut req: Request<SharedRepository>) -> TideResult {
+    let data: Model = req.body_json().await?;
+    let repo = req.state();
+    let key = data.key();
+    let mut repo = repo.lock().unwrap();
+    repo.insert(key.to_string(), data.value().to_string());
+    Ok("Data inserted".into())
 }
