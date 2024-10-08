@@ -1,3 +1,11 @@
 ## Quick Dev
+#GET http://localhost:8080/hello
 
-GET http://localhost:8080/hello
+## Fallback route
+#GET http://localhost:8080/404
+
+## Greet the user with a name
+# GET http://localhost:8080/greet/Naveed
+
+## Greet the user with a name and age in query params
+GET http://localhost:8080/greet?name=Naveed&age=30
