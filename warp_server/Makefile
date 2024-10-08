@@ -21,7 +21,7 @@ clean:
 
 # Command to keep server reloading upon save
 watch:
-	cargo watch -q -c -w src/ -x 'run'
+	cargo watch -q -c -w src/ -x 'fmt' -x 'run'
 
 # Command to auto reformat the code
 fmt:
