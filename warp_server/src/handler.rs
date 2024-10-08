@@ -29,6 +29,11 @@ pub fn greet_with_query_parameters(
         })
 }
 
+pub fn serve_static_files(
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path("static").and(warp::fs::dir("static"))
+}
+// Fallback route
 pub fn fallback() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path::end().map(|| warp::reply::html("No Route Found"))
 }

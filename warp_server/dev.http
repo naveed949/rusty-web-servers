@@ -8,4 +8,7 @@
 # GET http://localhost:8080/greet/Naveed
 
 ## Greet the user with a name and age in query params
-GET http://localhost:8080/greet?name=Naveed&age=30
+# GET http://localhost:8080/greet?name=Naveed&age=30
+
+## Serve static files
+GET http://localhost:8080/static/index.html

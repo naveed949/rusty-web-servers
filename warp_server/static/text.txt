@@ -1,0 +1,4 @@
+Hello, World!
+Welcome to the Wrap web server.
+This is a sample text file being served over HTTP.
+Enjoy your stay!
