@@ -11,4 +11,7 @@
 # GET http://localhost:8080/greet?name=Naveed&age=30
 
 ## Serve static files
-GET http://localhost:8080/static/index.html
+# GET http://localhost:8080/static/index.html
+
+## Todo route
+GET http://localhost:8080/todo
