@@ -2,7 +2,7 @@
 members = [
     "bare_metal",
     "tide_server"
-]
+, "warp_server"]
 resolver = "2"
 
 [profile.release]
