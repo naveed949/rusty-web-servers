@@ -34,7 +34,7 @@ pub fn serve_static_files(
     warp::path("static").and(warp::fs::dir("static"))
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 struct Todo {
     id: u64,
     title: String,
@@ -42,7 +42,30 @@ struct Todo {
 }
 pub fn todo_list_json() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone
 {
-    warp::path("todo").and(warp::get()).map(|| {
+    warp::path("todo")
+        .and(warp::get())
+        .and(warp::path::end())
+        .map(|| {
+            let todos = vec![
+                Todo {
+                    id: 1,
+                    title: "Buy milk".to_string(),
+                    completed: false,
+                },
+                Todo {
+                    id: 2,
+                    title: "Buy eggs".to_string(),
+                    completed: true,
+                },
+            ];
+
+            warp::reply::json(&todos)
+        })
+}
+
+pub fn todo_list_json_with_id(
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("todo" / u64).and(warp::get()).map(|id| {
         let todos = vec![
             Todo {
                 id: 1,
@@ -56,7 +79,12 @@ pub fn todo_list_json() -> impl Filter<Extract = impl warp::Reply, Error = warp:
             },
         ];
 
-        warp::reply::json(&todos)
+        let todo = todos.into_iter().find(|todo| todo.id == id);
+
+        match todo {
+            Some(todo) => warp::reply::json(&todo),
+            None => warp::reply::json(&"Todo not found"),
+        }
     })
 }
 // Fallback route
