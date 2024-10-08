@@ -5,7 +5,8 @@ pub fn hello() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejectio
     warp::path!("hello").map(|| warp::reply::html("Hello, Warp!"))
 }
 
-pub fn greet_with_path_variable() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn greet_with_path_variable(
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("greet" / String).map(|name| warp::reply::html(format!("Hello, {}!", name)))
 }
 
@@ -15,12 +16,16 @@ struct GreetRequest {
     age: u8,
 }
 
-pub fn greet_with_query_parameters() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn greet_with_query_parameters(
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("greet")
         .and(warp::get())
         .and(warp::query::<GreetRequest>())
         .map(|query: GreetRequest| {
-            warp::reply::html(format!("Hello, {}! You are {} years old.", query.name, query.age))
+            warp::reply::html(format!(
+                "Hello, {}! You are {} years old.",
+                query.name, query.age
+            ))
         })
 }
 

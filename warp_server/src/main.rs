@@ -1,12 +1,12 @@
 mod config;
 mod handler;
 mod middleware;
+mod repository;
 mod router;
 mod server;
-mod repository;
 
-use server::Server;
 use config::Config;
+use server::Server;
 
 #[tokio::main]
 async fn main() {
