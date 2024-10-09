@@ -1,6 +1,10 @@
 use serde::{Deserialize, Serialize};
 use warp::Filter;
 
+use crate::middleware::{self, with_auth, Unauthorized};
+
+// Define the handler functions (filters in warp)
+
 pub fn hello() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("hello").map(|| warp::reply::html("Hello, Warp!"))
 }
@@ -94,6 +98,7 @@ pub fn todo_list_set_json(
         .and(warp::post())
         .and(warp::body::json())
         .and(warp::path::end())
+        .and(with_auth().untuple_one())
         .map(|todo: Todo| {
             log::info!("Received todo: {:?}", todo);
             warp::reply::json(&todo)
@@ -102,4 +107,24 @@ pub fn todo_list_set_json(
 // Fallback route
 pub fn fallback() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path::end().map(|| warp::reply::html("No Route Found"))
+}
+
+// Define the function to handle rejections
+pub async fn handle_rejection(err: warp::Rejection) -> Result<impl warp::Reply, warp::Rejection> {
+    if err.is_not_found() {
+        Ok(warp::reply::with_status(
+            "No Route Found",
+            warp::http::StatusCode::NOT_FOUND,
+        ))
+    } else if let Some(_) = err.find::<middleware::Unauthorized>() {
+        Ok(warp::reply::with_status(
+            "Unauthorized",
+            warp::http::StatusCode::UNAUTHORIZED,
+        ))
+    } else {
+        Ok(warp::reply::with_status(
+            "Internal Server Error",
+            warp::http::StatusCode::INTERNAL_SERVER_ERROR,
+        ))
+    }
 }
