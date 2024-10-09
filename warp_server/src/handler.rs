@@ -34,7 +34,7 @@ pub fn serve_static_files(
     warp::path("static").and(warp::fs::dir("static"))
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 struct Todo {
     id: u64,
     title: String,
@@ -86,6 +86,18 @@ pub fn todo_list_json_with_id(
             None => warp::reply::json(&"Todo not found"),
         }
     })
+}
+
+pub fn todo_list_set_json(
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path("todo")
+        .and(warp::post())
+        .and(warp::body::json())
+        .and(warp::path::end())
+        .map(|todo: Todo| {
+            log::info!("Received todo: {:?}", todo);
+            warp::reply::json(&todo)
+        })
 }
 // Fallback route
 pub fn fallback() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

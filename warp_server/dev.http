@@ -17,4 +17,16 @@
 # GET http://localhost:8080/todo
 
 ## Todo item by id
-GET http://localhost:8080/todo/1
+# GET http://localhost:8080/todo/2
+
+## Todo item by id
+# POST http://localhost:8080/todo {"title": "Learn Rust", "done": false}
+## Create a new user
+POST http://localhost:8080/todo
+Content-Type: application/json
+
+{
+    "id": 4,
+    "title": "Same TODO",
+    "completed": false
+}
