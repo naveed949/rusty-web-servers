@@ -24,6 +24,7 @@
 ## Create a new user
 POST http://localhost:8080/todo
 Content-Type: application/json
+Authorization: Bearer mysecrettoken
 
 {
     "id": 4,

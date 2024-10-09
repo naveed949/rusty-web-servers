@@ -1,4 +1,5 @@
 mod config;
+mod errors;
 mod handler;
 mod middleware;
 mod repository;
