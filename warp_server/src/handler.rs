@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use warp::Filter;
 
-use crate::middleware::{self, with_auth, Unauthorized};
+use crate::middleware::{self, with_auth, Unauthorized, User};
 
 // Define the handler functions (filters in warp)
 
@@ -98,9 +98,9 @@ pub fn todo_list_set_json(
         .and(warp::post())
         .and(warp::body::json())
         .and(warp::path::end())
-        .and(with_auth().untuple_one())
-        .map(|todo: Todo| {
-            log::info!("Received todo: {:?}", todo);
+        .and(with_auth())
+        .map(|todo: Todo, user: User| {
+            log::info!("Received todo: {:?} from user: {}", todo, user.name);
             warp::reply::json(&todo)
         })
 }
