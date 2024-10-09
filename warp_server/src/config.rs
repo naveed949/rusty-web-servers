@@ -1,9 +1,12 @@
 use serde::Deserialize;
 
+use crate::repository::InMemoryDB;
+
 #[derive(Deserialize)]
 pub struct Config {
     pub address: String,
     pub port: u16,
+    pub db: InMemoryDB,
 }
 
 impl Config {
@@ -13,6 +16,7 @@ impl Config {
         Config {
             address: "127.0.0.1".to_string(),
             port: 8080,
+            db: InMemoryDB::new(),
         }
     }
 }

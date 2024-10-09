@@ -1,7 +1,11 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use warp::Filter;
 
-use crate::middleware::{self, with_auth, Unauthorized, User};
+use crate::{
+    middleware::{self, with_auth, with_db, Unauthorized, User},
+    repository::{InMemoryDB, Todo},
+};
 
 // Define the handler functions (filters in warp)
 
@@ -38,70 +42,54 @@ pub fn serve_static_files(
     warp::path("static").and(warp::fs::dir("static"))
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Todo {
-    id: u64,
-    title: String,
-    completed: bool,
-}
-pub fn todo_list_json() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone
-{
+pub fn todo_list_json(
+    db: InMemoryDB,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path("todo")
         .and(warp::get())
         .and(warp::path::end())
-        .map(|| {
-            let todos = vec![
-                Todo {
-                    id: 1,
-                    title: "Buy milk".to_string(),
-                    completed: false,
-                },
-                Todo {
-                    id: 2,
-                    title: "Buy eggs".to_string(),
-                    completed: true,
-                },
-            ];
+        .and(with_db(db.clone()))
+        .map(|dbPool: InMemoryDB| {
+            let todos = dbPool.read_all_items();
 
             warp::reply::json(&todos)
         })
 }
 
 pub fn todo_list_json_with_id(
+    db: InMemoryDB,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("todo" / u64).and(warp::get()).map(|id| {
-        let todos = vec![
-            Todo {
-                id: 1,
-                title: "Buy milk".to_string(),
-                completed: false,
-            },
-            Todo {
-                id: 2,
-                title: "Buy eggs".to_string(),
-                completed: true,
-            },
-        ];
+    warp::path!("todo" / u64)
+        .and(warp::get())
+        .and(with_db(db.clone()))
+        .map(|id: u64, db_pool: InMemoryDB| {
+            let todo = db_pool.read_item(id);
 
-        let todo = todos.into_iter().find(|todo| todo.id == id);
-
-        match todo {
-            Some(todo) => warp::reply::json(&todo),
-            None => warp::reply::json(&"Todo not found"),
-        }
-    })
+            match todo {
+                Some(todo) => warp::reply::json(&todo),
+                None => warp::reply::json(&"Todo not found"),
+            }
+        })
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+struct TodoRequest {
+    title: String,
+    completed: bool,
+}
 pub fn todo_list_set_json(
+    db: InMemoryDB,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path("todo")
         .and(warp::post())
         .and(warp::body::json())
         .and(warp::path::end())
         .and(with_auth())
-        .map(|todo: Todo, user: User| {
+        .and(middleware::with_db(db.clone()))
+        .map(|todo: TodoRequest, user: User, db_pool: InMemoryDB| {
             log::info!("Received todo: {:?} from user: {}", todo, user.name);
-            warp::reply::json(&todo)
+            db_pool.create_item(todo.title, todo.completed);
+            warp::reply::json(&"Todo created")
         })
 }
 // Fallback route

@@ -1,3 +1,4 @@
+use crate::repository::{InMemoryDB, Todo};
 use warp::Filter;
 
 pub fn with_auth() -> impl Filter<Extract = (User,), Error = warp::Rejection> + Clone {
@@ -22,4 +23,10 @@ impl warp::reject::Reject for Unauthorized {}
 pub struct User {
     pub id: u64,
     pub name: String,
+}
+
+pub fn with_db(
+    db: InMemoryDB,
+) -> impl Filter<Extract = (InMemoryDB,), Error = std::convert::Infallible> + Clone {
+    warp::any().map(move || db.clone())
 }
