@@ -1,27 +1,27 @@
 ## Quick Dev
-#GET http://localhost:8080/hello
+GET http://localhost:8080/hello
 
-## Fallback route
-#GET http://localhost:8080/404
+### Fallback route
+GET http://localhost:8080/404
 
-## Greet the user with a name
-# GET http://localhost:8080/greet/Naveed
+### Greet the user with a name
+GET http://localhost:8080/greet/Naveed
 
-## Greet the user with a name and age in query params
-# GET http://localhost:8080/greet?name=Naveed&age=30
+### Greet the user with a name and age in query params
+GET http://localhost:8080/greet?name=Naveed&age=30
 
-## Serve static files
-# GET http://localhost:8080/static/index.html
+### Serve static files
+GET http://localhost:8080/static/index.html
 
-## Todo route list
-# GET http://localhost:8080/todo
+### Todo route list
+GET http://localhost:8080/todo
 
-## Todo item by id
-# GET http://localhost:8080/todo/2
+### Todo item by id
+GET http://localhost:8080/todo/2
 
-## Todo item by id
-# POST http://localhost:8080/todo {"title": "Learn Rust", "done": false}
-## Create a new user
+### Todo item by id
+ POST http://localhost:8080/todo {"title": "Learn Rust", "done": false}
+### Create a new user
 POST http://localhost:8080/todo
 Content-Type: application/json
 Authorization: Bearer mysecrettoken
