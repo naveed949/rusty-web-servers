@@ -1,7 +1,8 @@
 # Warp Web Server
 
 This project is a simple web server built using the Warp framework in Rust. The server is designed to be modular and easy to extend, with separate modules for configuration, request handling, middleware, routing, and server management.
-> 💡 **Note:** Warp provides **abstract** request and response handling + complexity on demand.
+> 💡 **Note:** Warp is a highly composable and flexible web server framework for Rust, designed to handle complexity on demand. It leverages Rust's powerful type system to provide a safe and expressive API, making it suitable for both simple and complex web applications.
+
 ## Project Structure
 
 The project is organized into the following modules:
