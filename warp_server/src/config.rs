@@ -2,7 +2,6 @@ use serde::Deserialize;
 
 use crate::repository::InMemoryDB;
 
-#[derive(Deserialize)]
 pub struct Config {
     pub address: String,
     pub port: u16,

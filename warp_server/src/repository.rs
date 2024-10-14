@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Todo {
@@ -9,16 +9,17 @@ pub struct Todo {
     pub title: String,
     pub completed: bool,
 }
-
-#[derive(Clone, Serialize, serde::Deserialize)]
+#[derive(Serialize, Deserialize)]
+struct TodoMap(HashMap<u64, Todo>);
+#[derive(Clone)]
 pub struct InMemoryDB {
-    items: Arc<Mutex<HashMap<u64, Todo>>>,
+    items: Arc<Mutex<TodoMap>>,
 }
 
 impl InMemoryDB {
     pub fn new() -> Self {
         InMemoryDB {
-            items: Arc::new(Mutex::new(HashMap::new())),
+            items: Arc::new(Mutex::new(TodoMap(HashMap::new()))),
         }
     }
 
@@ -29,21 +30,21 @@ impl InMemoryDB {
             completed,
         };
 
-        self.items.lock().unwrap().insert(item.id, item.clone());
+        self.items.lock().unwrap().0.insert(item.id, item.clone());
         item
     }
 
     pub fn read_item(&self, id: u64) -> Option<Todo> {
-        self.items.lock().unwrap().get(&id).cloned()
+        self.items.lock().unwrap().0.get(&id).cloned()
     }
 
     pub fn read_all_items(&self) -> Vec<Todo> {
-        self.items.lock().unwrap().values().cloned().collect()
+        self.items.lock().unwrap().0.values().cloned().collect()
     }
 
     pub fn update_item(&self, id: u64, title: String, completed: bool) -> Option<Todo> {
         let mut items = self.items.lock().unwrap();
-        if let Some(item) = items.get_mut(&id) {
+        if let Some(item) = items.0.get_mut(&id) {
             item.title = title;
             item.completed = completed;
             return Some(item.clone());
@@ -52,6 +53,6 @@ impl InMemoryDB {
     }
 
     pub fn delete_item(&self, id: u64) -> bool {
-        self.items.lock().unwrap().remove(&id).is_some()
+        self.items.lock().unwrap().0.remove(&id).is_some()
     }
 }

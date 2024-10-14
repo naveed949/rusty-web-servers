@@ -88,8 +88,8 @@ pub fn todo_list_set_json(
         .and(middleware::with_db(db.clone()))
         .map(|todo: TodoRequest, user: User, db_pool: InMemoryDB| {
             log::info!("Received todo: {:?} from user: {}", todo, user.name);
-            db_pool.create_item(todo.title, todo.completed);
-            warp::reply::json(&"Todo created")
+            let item = db_pool.create_item(todo.title, todo.completed);
+            warp::reply::json(&format!("Created todo with id: {}", item.id))
         })
 }
 // Fallback route
