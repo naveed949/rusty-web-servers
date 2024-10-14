@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "bare_metal",
+    "bare_metal", "rocket_server",
     "tide_server"
 , "warp_server"]
 resolver = "2"
