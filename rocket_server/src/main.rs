@@ -5,6 +5,7 @@ use rocket::serde::{json::serde_json, json::Json};
 use rocket::tokio::time::{sleep, Duration};
 use serde::{Deserialize, Serialize};
 use std::io;
+use std::path::PathBuf;
 
 use rocket::tokio::task::spawn_blocking;
 #[get("/")]
@@ -12,9 +13,9 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/greet/<name>")]
-fn hello(name: &str) -> String {
-    format!("Hello, {}!", name)
+#[get("/greet/<name..>")]
+fn hello(name: PathBuf) -> String {
+    format!("Hello, {}!", name.into_os_string().into_string().unwrap())
 }
 
 #[derive(Deserialize, Serialize)]
