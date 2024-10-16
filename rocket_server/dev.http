@@ -15,3 +15,6 @@ Content-Type: application/json
 
 ### blocking task
 http://localhost:8000/blocking_task
+
+### serve static files
+http://localhost:8000/static/index.html

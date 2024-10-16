@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate rocket;
+use rocket::fs::FileServer;
 use rocket::serde::{json::serde_json, json::Json};
 use rocket::tokio::time::{sleep, Duration};
 use serde::{Deserialize, Serialize};
@@ -48,6 +49,7 @@ async fn blocking_task() -> io::Result<Vec<u8>> {
 async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
         .mount("/", routes![index, hello, create_task, blocking_task])
+        .mount("/static", FileServer::from("static"))
         .launch()
         .await?;
 
