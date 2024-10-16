@@ -1,2 +1,17 @@
-## Hello world
+### Hello world
 http://localhost:8000/
+
+### Greet
+http://localhost:8000/greet/Malik
+
+### Greet
+POST http://localhost:8000/task
+Content-Type: application/json
+
+{
+    "id": 4,
+    "name": "Malik"
+}
+
+### blocking task
+http://localhost:8000/blocking_task
