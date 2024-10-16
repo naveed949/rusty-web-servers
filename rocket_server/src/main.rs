@@ -15,6 +15,7 @@ fn index() -> &'static str {
 
 #[get("/greet/<name..>")]
 fn hello(name: PathBuf) -> String {
+    // Accepts a single path segment or multiple segments as a single parameter. The .. is a special syntax that tells Rocket to capture all remaining segments. e.g. /greet/Alice/Bob/Charlie will capture ["Alice", "Bob", "Charlie"]. The captured segments are then concatenated into a single PathBuf.
     format!("Hello, {}!", name.into_os_string().into_string().unwrap())
 }
 
