@@ -2,7 +2,9 @@
 http://localhost:8000/
 
 ### Greet
-http://localhost:8000/greet/Malik
+http://localhost:8000/greet/Malik/malik
+### Greet with ignored parameter
+http://localhost:8000/greets/Malik/ignored/City
 
 ### Greet
 POST http://localhost:8000/task

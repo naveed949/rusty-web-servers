@@ -19,6 +19,12 @@ fn hello(name: PathBuf) -> String {
     format!("Hello, {}!", name.into_os_string().into_string().unwrap())
 }
 
+// ignored segments are not captured
+#[get("/greets/<name>/<_>/<city>")]
+async fn ignored_segment(name: &str, city: &str) -> String {
+    format!("Hello, {} from {}!", name, city)
+}
+
 #[derive(Deserialize, Serialize)]
 struct Task {
     id: u32,
@@ -50,7 +56,10 @@ async fn blocking_task() -> io::Result<Vec<u8>> {
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
-        .mount("/", routes![index, hello, create_task, blocking_task])
+        .mount(
+            "/",
+            routes![index, hello, create_task, blocking_task, ignored_segment],
+        )
         .mount("/static", FileServer::from("static"))
         .launch()
         .await?;
