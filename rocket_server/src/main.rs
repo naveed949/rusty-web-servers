@@ -48,6 +48,23 @@ async fn blocking_task() -> io::Result<Vec<u8>> {
     Ok(vec)
 }
 
+// generate forwarding routes
+#[get("/sum/<a>/<b>")]
+fn sum1(a: i32, b: i32) -> String {
+    format!("{} + {} = {}", a, b, a + b)
+}
+#[get("/sum/<a>/<b>", rank = 2)]
+fn sum2(a: &str, b: &str) -> String {
+    let a = a.chars().filter(|c| c.is_digit(10)).collect::<String>();
+    let b = b.chars().filter(|c| c.is_digit(10)).collect::<String>();
+    format!(
+        "{} + {} = {}",
+        a,
+        b,
+        a.parse::<i32>().unwrap() + b.parse::<i32>().unwrap()
+    )
+}
+
 // #[launch]
 // fn rocket() -> _ {
 //     rocket::build().mount("/", routes![index])
@@ -61,6 +78,7 @@ async fn main() -> Result<(), rocket::Error> {
             routes![index, hello, create_task, blocking_task, ignored_segment],
         )
         .mount("/static", FileServer::from("static"))
+        .mount("/forwarding", routes![sum1, sum2])
         .launch()
         .await?;
 

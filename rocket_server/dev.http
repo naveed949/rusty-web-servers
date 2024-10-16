@@ -20,3 +20,8 @@ http://localhost:8000/blocking_task
 
 ### serve static files
 http://localhost:8000/static/index.html
+
+### forwarding request based on path
+http://localhost:8000/forwarding/sum/1/2
+### forwarding request based on path
+http://localhost:8000/forwarding/sum/3three/4four
